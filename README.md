@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌿 Peduli Sampah - Sistem Pengelolaan Sampah Terintegrasi RDBMS & Transaksi Setor Sampah
 
-## Getting Started
+![Peduli Sampah Logo](public/logo.jpg)
 
-First, run the development server:
+> **Proyek UTS Pemrograman Web - Sistem Informasi Pengelolaan Sampah**  
+> Dibangun menggunakan **Next.js 15 (App Router)**, **Prisma ORM**, dan basis data relasional **PostgreSQL**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## 🚀 Live Demo & Repository
+- **Live Website Preview (Vercel):** [https://pengelolaan-sampah.vercel.app](https://pengelolaan-sampah.vercel.app) *(Ganti dengan link Vercel Anda)*
+- **GitHub Repository:** [https://github.com/MuhammadHabibi/pengelolaan-sampah](https://github.com/MuhammadHabibi/pengelolaan-sampah) *(Ganti dengan link repo Anda)*
+- **File Database SQL:** [database_pengelolaan_sampah.sql](./database_pengelolaan_sampah.sql)
+
+---
+
+## ✨ Fitur Utama Aplikasi
+
+### 1. 👥 Multi-Role Authentication & Security
+- **Role Warga / User:** Pendaftaran akun mandiri, login terenkripsi *bcrypt*, manajemen sesi berbasis *HTTP-only JWT Cookies*.
+- **Role Admin / Petugas:** Akses panel kontrol terpusat untuk verifikasi laporan dan kelola transaksi.
+
+### 2. 📝 Pelaporan Sampah Liar (One-to-One Image Proof)
+- Pengiriman laporan sampah masyarakat dengan foto bukti visual langsung dari perangkat (disimpan di `/public/uploads/`).
+- Anonimisasi nama pelapor pada tabel publik untuk menjaga privasi warga.
+
+### 3. ♻️ Transaksi Setor Sampah / Bank Sampah (Proses Transaksi Real-Time)
+- Warga mengajukan setor sampah dengan kalkulator estimasi nilai tukar (Rupiah) dan poin reward otomatis.
+- Alur transaksi multi-status: `PENDING` ➔ `DIPROSES` ➔ `SELESAI` / `DIBATALKAN`.
+- Admin dapat memvalidasi dan mengubah status transaksi secara langsung.
+
+### 4. 🏢 Manajemen Master Data & Relasi Relasional
+- **Relasi 1:1:** `LaporanSampah` ⟷ `FotoSampah` (Unique Foreign Key).
+- **Relasi 1:N:** `User` ⟷ `LaporanSampah` & `TransaksiSampah` (Cascade Delete).
+- **Relasi N:M:** `Fasilitas` ⟷ `JenisSampah` (Junction table `_FasilitasToJenisSampah`).
+
+---
+
+## 🛠️ Tech Stack
+- **Frontend & Backend:** Next.js 15 (React 19, App Router, Server Actions)
+- **Styling:** Tailwind CSS (Modern Glassmorphism & Dark Mode)
+- **Database & ORM:** PostgreSQL & Prisma ORM
+- **Authentication:** JWT Session via `jose` & Password Hashing via `bcryptjs`
+- **Icons:** Lucide React
+
+---
+
+## 📂 Struktur Database Relasional (PostgreSQL)
+
+```
+[ User ] (1) ────< (N) [ LaporanSampah ] (1) ──── (1) [ FotoSampah ]
+   │
+   └─────────────< (N) [ TransaksiSampah ]
+                              │
+[ JenisSampah ] (1) ──────────┤
+      │
+     (N)
+      │
+[ _FasilitasToJenisSampah ]
+      │
+     (N)
+      │
+[ Fasilitas ]
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔑 Akun Uji Coba (Demo Credentials)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Role | Email | Password |
+| :--- | :--- | :--- |
+| **Admin Pengelola** | `admin@example.com` | `12345678` |
+| **Warga / User** | `user@example.com` | `12345678` |
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## ⚙️ Cara Menjalankan Proyek Secara Lokal
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. **Clone repository:**
+   ```bash
+   git clone https://github.com/username/pengelolaan-sampah.git
+   cd pengelolaan-sampah
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2. **Instal dependensi:**
+   ```bash
+   npm install
+   ```
 
-## Deploy on Vercel
+3. **Konfigurasi Environment Variable (`.env`):**
+   ```env
+   DATABASE_URL="postgresql://postgres:password@localhost:5432/pengelolaan_sampah?schema=public"
+   SESSION_SECRET="your-super-secret-key-32-chars-long"
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. **Migrasi & Generate Prisma:**
+   ```bash
+   npx prisma db push
+   npx prisma generate
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+5. **Jalankan Aplikasi:**
+   ```bash
+   npm run dev
+   ```
+   Buka [http://localhost:3000](http://localhost:3000) di browser Anda.
+
+---
+**Pengembang:** Muhammad Habibi • UTS Pemrograman Web

@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum StatusTransaksi {
+  PENDING
+  DIPROSES
+  SELESAI
+  DIBATALKAN
+}
+
+model User {
+  id             String          @id @default(uuid())
+  nama           String
+  email          String          @unique
+  noHp           String          @unique
+  nik            String          @unique
+  password       String
+  role           Role            @default(USER)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  laporanSampah   LaporanSampah[]
+  transaksiSampah TransaksiSampah[]
+}
+
+
+model JenisSampah {
+  id             String          @id @default(uuid())
+  namaJenis      String          @unique
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  laporanSampah   LaporanSampah[]
+  transaksiSampah TransaksiSampah[]
+  fasilitas       Fasilitas[]     // Many-to-Many relation
+}
+
+model Fasilitas {
+  id             String          @id @default(uuid())
+  namaFasilitas  String          @unique
+  lokasi         String
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  jenisSampahDiterima JenisSampah[] // Many-to-Many relation
+}
+
+
+model Wilayah {
+  id              String          @id @default(uuid())
+  namaWilayah     String          @unique
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  laporanSampah   LaporanSampah[]
+  transaksiSampah TransaksiSampah[]
+}
+
+
+model LaporanSampah {
+  id             String          @id @default(uuid())
+  berat          Float
+  tanggalLapor   DateTime        @default(now())
+  
+  userId         String
+  jenisSampahId  String
+  wilayahId      String
+
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jenisSampah    JenisSampah     @relation(fields: [jenisSampahId], references: [id], onDelete: Restrict)
+  wilayah        Wilayah         @relation(fields: [wilayahId], references: [id], onDelete: Restrict)
+
+  // Soal 4: One-to-One dengan FotoSampah
+  fotoSampah     FotoSampah?
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+//Model FotoSampah (One-to-One)
+model FotoSampah {
+  id             String          @id @default(uuid())
+  imageUrl       String
+  laporanId      String          @unique
+
+  laporan        LaporanSampah   @relation(fields: [laporanId], references: [id], onDelete: Cascade)
+
+  createdAt      DateTime        @default(now())
+}
+
+model TransaksiSampah {
+  id               String          @id @default(uuid())
+  kodeTransaksi    String          @unique
+  berat            Float
+  totalHarga       Float
+  totalPoin        Int
+  status           StatusTransaksi @default(PENDING)
+  catatan          String?
+  tanggalTransaksi DateTime        @default(now())
+
+  userId           String
+  jenisSampahId    String
+  wilayahId        String
+
+  user             User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jenisSampah      JenisSampah     @relation(fields: [jenisSampahId], references: [id], onDelete: Restrict)
+  wilayah          Wilayah         @relation(fields: [wilayahId], references: [id], onDelete: Restrict)
+
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+}
