@@ -14,7 +14,18 @@ const LaporanSchema = z.object({
   berat: z.coerce.number().positive("Berat sampah harus lebih dari 0 kg"),
 });
 
-export async function createLaporan(prevState: any, formData: FormData) {
+export interface LaporanActionState {
+  success?: boolean;
+  message?: string;
+  errors?: {
+    jenisSampahId?: string[];
+    wilayahId?: string[];
+    berat?: string[];
+    imageFile?: string[];
+  };
+}
+
+export async function createLaporan(prevState: any, formData: FormData): Promise<LaporanActionState> {
   const session = await getSession();
   if (!session?.userId) {
     return { success: false, message: "Sesi telah berakhir, silakan login kembali." };
@@ -37,7 +48,7 @@ export async function createLaporan(prevState: any, formData: FormData) {
   if (!validatedData.success) {
     return {
       success: false,
-      errors: validatedData.error.flatten().fieldErrors,
+      errors: validatedData.error.flatten().fieldErrors as any,
     };
   }
 
