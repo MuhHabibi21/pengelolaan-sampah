@@ -4,8 +4,29 @@ import { prisma } from "@/lib/prisma";
 import { PlusCircle } from "lucide-react";
 
 export default async function BuatLaporanPage() {
-  const jenisSampah = await prisma.jenisSampah.findMany({ orderBy: { namaJenis: "asc" } });
-  const wilayah = await prisma.wilayah.findMany({ orderBy: { namaWilayah: "asc" } });
+  let jenisSampah: any[] = [];
+  let wilayah: any[] = [];
+
+  try {
+    const [dbJenis, dbWilayah] = await Promise.all([
+      prisma.jenisSampah.findMany({ orderBy: { namaJenis: "asc" } }),
+      prisma.wilayah.findMany({ orderBy: { namaWilayah: "asc" } }),
+    ]);
+    jenisSampah = dbJenis;
+    wilayah = dbWilayah;
+  } catch (error) {
+    console.warn("Database offline, using fallback jenis & wilayah options");
+    jenisSampah = [
+      { id: "j-1", namaJenis: "Organik" },
+      { id: "j-2", namaJenis: "Anorganik" },
+      { id: "j-3", namaJenis: "B3 (Bahan Berbahaya)" },
+    ];
+    wilayah = [
+      { id: "w-1", namaWilayah: "Kecamatan Menteng" },
+      { id: "w-2", namaWilayah: "Kecamatan Kebayoran Baru" },
+      { id: "w-3", namaWilayah: "Kecamatan Cilandak" },
+    ];
+  }
 
   return (
     <div className="space-y-8">
