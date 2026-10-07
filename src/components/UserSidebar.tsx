@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   LogOut,
   FileText,
   Settings,
-  Leaf,
   ArrowLeftRight,
+  PlusCircle,
 } from "lucide-react";
 import { logout } from "@/app/actions/auth";
 
@@ -35,6 +36,12 @@ export default function UserSidebar() {
       exact: false,
     },
     {
+      name: "Kirim Laporan Baru",
+      href: "/dashboard/laporan/baru",
+      icon: PlusCircle,
+      exact: false,
+    },
+    {
       name: "Pengaturan Akun",
       href: "/dashboard/settings",
       icon: Settings,
@@ -50,22 +57,28 @@ export default function UserSidebar() {
   };
 
   return (
-    <aside className="w-72 bg-slate-900 border-r border-slate-800 flex flex-col relative overflow-hidden flex-shrink-0">
-      {/* Glow effect */}
-      <div className="absolute top-0 left-0 w-full h-32 bg-emerald-500/10 blur-3xl rounded-full pointer-events-none"></div>
+    <aside className="w-72 bg-emerald-950 border-r border-emerald-900/60 flex flex-col relative overflow-hidden flex-shrink-0 text-white">
+      {/* Glow Background */}
+      <div className="absolute top-0 left-0 w-full h-40 bg-emerald-500/15 blur-3xl rounded-full pointer-events-none"></div>
 
-      <div className="p-8 pb-4 relative z-10">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-xl flex items-center justify-center shadow-lg">
-            <Leaf className="w-5 h-5 text-white" />
+      {/* Brand Header */}
+      <div className="p-7 pb-4 relative z-10 border-b border-emerald-900/40">
+        <Link href="/dashboard" className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl overflow-hidden shadow-md shadow-emerald-500/20 border border-emerald-700/50 flex-shrink-0">
+            <Image src="/logo.jpg" alt="Logo" width={40} height={40} className="object-cover" />
           </div>
-          <h2 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">
-            Peduli Sampah
-          </h2>
-        </div>
-        <p className="text-slate-400 text-xs font-medium ml-1">User Panel</p>
+          <div>
+            <h2 className="text-xl font-black text-white tracking-tight">
+              Peduli<span className="text-emerald-400">Sampah</span>
+            </h2>
+            <span className="inline-block px-2 py-0.5 text-[10px] font-bold bg-emerald-800/80 text-emerald-200 rounded-full">
+              Panel Warga
+            </span>
+          </div>
+        </Link>
       </div>
 
+      {/* Navigation */}
       <nav className="flex-1 px-4 mt-6 space-y-1.5 relative z-10 overflow-y-auto">
         {navItems.map((item) => {
           const active = isActive(item);
@@ -75,18 +88,18 @@ export default function UserSidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl font-medium transition-all group ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all group ${
                 active
-                  ? "text-emerald-300 bg-emerald-500/15 border border-emerald-500/30 shadow-[0_0_20px_rgba(16,185,129,0.1)]"
-                  : "text-slate-300 hover:text-emerald-300 hover:bg-white/5 border border-transparent"
+                  ? "bg-emerald-600 text-white shadow-lg shadow-emerald-900/40 font-bold"
+                  : "text-emerald-100/75 hover:text-white hover:bg-emerald-900/50"
               }`}
             >
               <Icon
-                size={20}
+                size={19}
                 className={
                   active
-                    ? "text-emerald-400"
-                    : "text-slate-400 group-hover:text-emerald-400 transition-colors"
+                    ? "text-white"
+                    : "text-emerald-400 group-hover:text-emerald-300 transition-colors"
                 }
               />
               <span>{item.name}</span>
@@ -95,13 +108,14 @@ export default function UserSidebar() {
         })}
       </nav>
 
-      <div className="p-4 border-t border-slate-800/50 relative z-10">
+      {/* Logout Footer */}
+      <div className="p-4 border-t border-emerald-900/40 relative z-10 bg-emerald-950/80">
         <form action={logout}>
           <button
             type="submit"
-            className="flex w-full items-center justify-center gap-2 px-4 py-3.5 text-red-400 bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 hover:text-red-300 rounded-2xl font-medium transition-all cursor-pointer"
+            className="flex w-full items-center justify-center gap-2 px-4 py-3 text-red-300 bg-red-950/40 border border-red-800/40 hover:bg-red-900/60 hover:text-white rounded-xl text-sm font-semibold transition-all cursor-pointer"
           >
-            <LogOut size={18} /> Keluar Akun
+            <LogOut size={16} /> Keluar Akun
           </button>
         </form>
       </div>

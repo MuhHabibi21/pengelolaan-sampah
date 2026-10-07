@@ -15,7 +15,6 @@ export default function FormTransaksi({
   const [berat, setBerat] = useState<string>("");
   const [selectedJenis, setSelectedJenis] = useState<string>("");
 
-  // Perkiraan tarif
   const getTarif = () => {
     const selected = jenisList.find((j) => j.id === selectedJenis);
     if (!selected) return 2000;
@@ -31,13 +30,13 @@ export default function FormTransaksi({
   const estimasiPoin = Math.floor(beratNum * 10);
 
   return (
-    <form action={formAction} className="space-y-4">
+    <form action={formAction} className="space-y-4 text-slate-800">
       {state?.message && (
         <div
-          className={`p-3 rounded-xl text-sm font-medium ${
+          className={`p-3.5 rounded-2xl text-xs font-semibold ${
             state.success
-              ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-              : "bg-red-500/20 text-red-300 border border-red-500/30"
+              ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
+              : "bg-red-100 text-red-800 border border-red-200"
           }`}
         >
           {state.message}
@@ -45,7 +44,7 @@ export default function FormTransaksi({
       )}
 
       <div>
-        <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">
+        <label className="block text-xs font-bold text-slate-600 uppercase mb-1.5">
           Kategori Sampah
         </label>
         <select
@@ -53,7 +52,7 @@ export default function FormTransaksi({
           required
           value={selectedJenis}
           onChange={(e) => setSelectedJenis(e.target.value)}
-          className="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-white outline-none focus:border-emerald-500 transition-colors"
+          className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all text-sm"
         >
           <option value="">-- Pilih Jenis Sampah --</option>
           {jenisList.map((j) => (
@@ -65,13 +64,13 @@ export default function FormTransaksi({
       </div>
 
       <div>
-        <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">
+        <label className="block text-xs font-bold text-slate-600 uppercase mb-1.5">
           Wilayah Penjemputan / Setor
         </label>
         <select
           name="wilayahId"
           required
-          className="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-white outline-none focus:border-emerald-500 transition-colors"
+          className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all text-sm"
         >
           <option value="">-- Pilih Wilayah --</option>
           {wilayahList.map((w) => (
@@ -83,7 +82,7 @@ export default function FormTransaksi({
       </div>
 
       <div>
-        <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">
+        <label className="block text-xs font-bold text-slate-600 uppercase mb-1.5">
           Berat Sampah (Kilogram)
         </label>
         <input
@@ -95,34 +94,34 @@ export default function FormTransaksi({
           value={berat}
           onChange={(e) => setBerat(e.target.value)}
           placeholder="Contoh: 3.5"
-          className="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-white outline-none focus:border-emerald-500 transition-colors"
+          className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all text-sm"
         />
       </div>
 
       <div>
-        <label className="block text-xs font-semibold text-slate-300 uppercase mb-1">
+        <label className="block text-xs font-bold text-slate-600 uppercase mb-1.5">
           Catatan / Alamat Detail (Opsional)
         </label>
         <textarea
           name="catatan"
           rows={2}
           placeholder="Catatan penjemputan atau kondisi sampah..."
-          className="w-full px-4 py-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-white outline-none focus:border-emerald-500 transition-colors text-sm"
+          className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all text-sm"
         ></textarea>
       </div>
 
       {/* Live Preview Estimasi */}
       {beratNum > 0 && (
-        <div className="p-3 bg-white/5 rounded-xl border border-white/10 text-xs space-y-1">
-          <div className="flex justify-between text-slate-300">
+        <div className="p-4 bg-emerald-50/80 rounded-2xl border border-emerald-100 text-xs space-y-1.5">
+          <div className="flex justify-between text-slate-600">
             <span>Estimasi Nilai Tukar:</span>
-            <span className="font-bold text-emerald-400">
+            <span className="font-extrabold text-emerald-700 text-sm">
               Rp {estimasiHarga.toLocaleString("id-ID")}
             </span>
           </div>
-          <div className="flex justify-between text-slate-300">
+          <div className="flex justify-between text-slate-600">
             <span>Estimasi Poin Reward:</span>
-            <span className="font-bold text-teal-400">+{estimasiPoin} Poin</span>
+            <span className="font-extrabold text-teal-700 text-sm">+{estimasiPoin} Poin</span>
           </div>
         </div>
       )}
@@ -130,15 +129,15 @@ export default function FormTransaksi({
       <button
         type="submit"
         disabled={isPending}
-        className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+        className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl shadow-md shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 text-sm cursor-pointer"
       >
         {isPending ? (
           <>
-            <Loader2 size={18} className="animate-spin" /> Memproses Transaksi...
+            <Loader2 size={16} className="animate-spin" /> Memproses Transaksi...
           </>
         ) : (
           <>
-            <PlusCircle size={18} /> Ajukan Transaksi Setor
+            <PlusCircle size={16} /> Ajukan Transaksi Setor
           </>
         )}
       </button>
