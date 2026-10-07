@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { prisma } from "@/lib/prisma";
 import { updateStatusTransaksi } from "@/app/actions/transaksi";
 import { ArrowLeftRight, CheckCircle2, Clock, AlertCircle, XCircle } from "lucide-react";

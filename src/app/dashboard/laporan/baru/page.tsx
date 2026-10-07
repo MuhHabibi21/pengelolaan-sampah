@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import FormLaporan from "@/components/FormLaporan";
 import { prisma } from "@/lib/prisma";
 import { PlusCircle } from "lucide-react";

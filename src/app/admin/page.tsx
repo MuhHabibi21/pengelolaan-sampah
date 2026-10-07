@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { prisma } from "@/lib/prisma";
 import { Users, FileText, MapPin, Scale, ArrowLeftRight, CheckCircle2, AlertCircle } from "lucide-react";
 import { getSession } from "@/lib/session";
