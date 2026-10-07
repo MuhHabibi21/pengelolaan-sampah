@@ -27,25 +27,25 @@ export default function UserSidebar() {
       name: "Transaksi Setor Sampah",
       href: "/dashboard/transaksi",
       icon: ArrowLeftRight,
-      exact: false,
+      exact: true,
     },
     {
       name: "Riwayat Laporan",
       href: "/dashboard/laporan",
       icon: FileText,
-      exact: false,
+      exact: true,
     },
     {
       name: "Kirim Laporan Baru",
       href: "/dashboard/laporan/baru",
       icon: PlusCircle,
-      exact: false,
+      exact: true,
     },
     {
       name: "Pengaturan Akun",
       href: "/dashboard/settings",
       icon: Settings,
-      exact: false,
+      exact: true,
     },
   ];
 

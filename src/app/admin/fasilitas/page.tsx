@@ -1,39 +1,58 @@
 import { prisma } from "@/lib/prisma";
+import { Building2, MapPin } from "lucide-react";
 
 export default async function FasilitasPage() {
   const fasilitas = await prisma.fasilitas.findMany({
     include: {
-      jenisSampahDiterima: true
+      jenisSampahDiterima: true,
     },
-    orderBy: { createdAt: 'desc' }
+    orderBy: { createdAt: "desc" },
   });
 
   return (
-    <div className="space-y-6">
-      <div className="bg-white dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Kelola Fasilitas Pengolahan</h1>
-        <p className="text-slate-500 dark:text-slate-400">Data fasilitas tempat pengolahan akhir dan kategori sampah yang mereka terima.</p>
+    <div className="space-y-8">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-extrabold text-slate-900 flex items-center gap-3">
+          <div className="p-2.5 bg-teal-100 text-teal-700 rounded-2xl">
+            <Building2 size={26} />
+          </div>
+          Kelola Fasilitas Pengolahan
+        </h1>
+        <p className="text-slate-500 mt-1">
+          Data fasilitas tempat pengolahan akhir dan kategori sampah yang mereka terima (Relasi Many-to-Many).
+        </p>
       </div>
 
-      <div className="bg-white dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400">
-              <tr>
-                <th className="px-6 py-4 font-semibold">Nama Fasilitas</th>
-                <th className="px-6 py-4 font-semibold">Lokasi</th>
-                <th className="px-6 py-4 font-semibold">Jenis Sampah Diterima (N to N)</th>
+      {/* Table Card */}
+      <div className="bg-white rounded-3xl border border-teal-100 shadow-sm p-6 sm:p-8">
+        <div className="overflow-x-auto rounded-2xl border border-slate-100">
+          <table className="w-full text-left border-collapse text-sm text-slate-700">
+            <thead>
+              <tr className="bg-teal-50/60 border-b border-teal-100 text-teal-950 font-semibold">
+                <th className="py-4 px-5 pl-6">Nama Fasilitas</th>
+                <th className="py-4 px-5">Lokasi Pengolahan</th>
+                <th className="py-4 px-5 pr-6">Jenis Sampah Diterima (N to N)</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+            <tbody className="divide-y divide-slate-100">
               {fasilitas.map((f) => (
-                <tr key={f.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                  <td className="px-6 py-4 font-medium text-slate-900 dark:text-white">{f.namaFasilitas}</td>
-                  <td className="px-6 py-4 text-slate-600 dark:text-slate-300">{f.lokasi}</td>
-                  <td className="px-6 py-4">
+                <tr key={f.id} className="hover:bg-teal-50/30 transition-colors">
+                  <td className="py-4 px-5 pl-6 font-bold text-slate-900 flex items-center gap-2">
+                    <Building2 size={16} className="text-teal-600" /> {f.namaFasilitas}
+                  </td>
+                  <td className="py-4 px-5 text-slate-600">
+                    <span className="inline-flex items-center gap-1">
+                      <MapPin size={14} className="text-teal-500" /> {f.lokasi}
+                    </span>
+                  </td>
+                  <td className="py-4 px-5 pr-6">
                     <div className="flex flex-wrap gap-2">
-                      {f.jenisSampahDiterima.map(js => (
-                        <span key={js.id} className="px-2.5 py-1 text-xs font-medium bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300 rounded-lg">
+                      {f.jenisSampahDiterima.map((js) => (
+                        <span
+                          key={js.id}
+                          className="px-3 py-1 text-xs font-bold bg-teal-100 text-teal-800 rounded-lg border border-teal-200"
+                        >
                           {js.namaJenis}
                         </span>
                       ))}
@@ -43,7 +62,9 @@ export default async function FasilitasPage() {
               ))}
               {fasilitas.length === 0 && (
                 <tr>
-                  <td colSpan={3} className="px-6 py-8 text-center text-slate-500">Belum ada data fasilitas.</td>
+                  <td colSpan={3} className="py-12 text-center text-slate-400">
+                    Belum ada data fasilitas pengolahan.
+                  </td>
                 </tr>
               )}
             </tbody>

@@ -3,13 +3,14 @@ import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
+import Link from "next/link";
+import { FileText, PlusCircle, MapPin, Camera } from "lucide-react";
 
 export default async function RiwayatLaporanPage() {
   const session = await getSession();
   if (!session?.userId) redirect("/login");
 
   const user = await prisma.user.findUnique({ where: { id: session.userId as string } });
-  
   if (!user) return <div className="p-8">User tidak ditemukan.</div>;
 
   const laporan = await prisma.laporanSampah.findMany({
@@ -23,45 +24,79 @@ export default async function RiwayatLaporanPage() {
   });
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold text-emerald-900 dark:text-emerald-100">Riwayat Laporan</h1>
-      <p className="text-emerald-700 dark:text-emerald-400">Daftar semua laporan sampah yang telah Anda kirimkan.</p>
-      
-      <div className="bg-white dark:bg-emerald-900/50 rounded-2xl border border-emerald-100 dark:border-emerald-800 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold text-slate-900 flex items-center gap-3">
+            <div className="p-2.5 bg-emerald-100 text-emerald-700 rounded-2xl">
+              <FileText size={26} />
+            </div>
+            Riwayat Laporan Sampah
+          </h1>
+          <p className="text-slate-500 mt-1">
+            Daftar seluruh laporan pengaduan sampah yang telah Anda kirimkan ke sistem.
+          </p>
+        </div>
+        <Link
+          href="/dashboard/laporan/baru"
+          className="inline-flex items-center gap-2 px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl shadow-md shadow-emerald-600/20 transition-all text-sm self-start sm:self-auto"
+        >
+          <PlusCircle size={18} /> Kirim Laporan Baru
+        </Link>
+      </div>
+
+      {/* Table Card */}
+      <div className="bg-white rounded-3xl border border-emerald-100 shadow-sm p-6 sm:p-8">
+        <div className="overflow-x-auto rounded-2xl border border-slate-100">
+          <table className="w-full text-left border-collapse text-sm text-slate-700">
             <thead>
-              <tr className="bg-emerald-50 dark:bg-emerald-800/50 border-b border-emerald-100 dark:border-emerald-800">
-                <th className="p-4 font-semibold text-emerald-900 dark:text-emerald-100">Tanggal</th>
-                <th className="p-4 font-semibold text-emerald-900 dark:text-emerald-100">Jenis Sampah</th>
-                <th className="p-4 font-semibold text-emerald-900 dark:text-emerald-100">Wilayah</th>
-                <th className="p-4 font-semibold text-emerald-900 dark:text-emerald-100">Berat (kg)</th>
-                <th className="p-4 font-semibold text-emerald-900 dark:text-emerald-100 text-center">Foto Bukti</th>
+              <tr className="bg-emerald-50/60 border-b border-emerald-100 text-emerald-950 font-semibold">
+                <th className="py-4 px-5 pl-6">Tanggal Lapor</th>
+                <th className="py-4 px-5">Jenis Sampah</th>
+                <th className="py-4 px-5">Wilayah Pengangkutan</th>
+                <th className="py-4 px-5">Berat Sampah</th>
+                <th className="py-4 px-5 pr-6 text-center">Foto Bukti</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-100">
               {laporan.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="p-8 text-center text-emerald-600 dark:text-emerald-400">Belum ada riwayat laporan.</td>
+                  <td colSpan={5} className="py-12 text-center text-slate-400">
+                    <p className="text-base font-semibold text-slate-500">Belum ada riwayat laporan.</p>
+                    <p className="text-xs text-slate-400 mt-1">Anda belum pernah mengirimkan laporan sampah.</p>
+                  </td>
                 </tr>
               ) : (
                 laporan.map((item) => (
-                  <tr key={item.id} className="border-b border-emerald-100 dark:border-emerald-800/50 hover:bg-emerald-50/50 dark:hover:bg-emerald-800/30 transition-colors">
-                    <td className="p-4 text-emerald-800 dark:text-emerald-200">
+                  <tr key={item.id} className="hover:bg-emerald-50/30 transition-colors">
+                    <td className="py-4 px-5 pl-6 text-slate-600 font-medium">
                       {format(item.tanggalLapor, "dd MMMM yyyy", { locale: id })}
                     </td>
-                    <td className="p-4">
-                      <span className="inline-block px-3 py-1 bg-emerald-100 dark:bg-emerald-800 text-emerald-700 dark:text-emerald-300 rounded-full text-sm font-medium">
+                    <td className="py-4 px-5">
+                      <span className="inline-block px-3 py-1 bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold">
                         {item.jenisSampah.namaJenis}
                       </span>
                     </td>
-                    <td className="p-4 text-emerald-800 dark:text-emerald-200">{item.wilayah.namaWilayah}</td>
-                    <td className="p-4 text-emerald-800 dark:text-emerald-200 font-semibold">{item.berat} kg</td>
-                    <td className="p-4 text-center">
+                    <td className="py-4 px-5 text-slate-600 flex items-center gap-1.5">
+                      <MapPin size={14} className="text-emerald-500" />
+                      {item.wilayah.namaWilayah}
+                    </td>
+                    <td className="py-4 px-5 font-bold text-slate-800">
+                      {item.berat} <span className="text-xs font-normal text-slate-500">kg</span>
+                    </td>
+                    <td className="py-4 px-5 pr-6 text-center">
                       {item.fotoSampah ? (
-                        <a href={item.fotoSampah.imageUrl} target="_blank" rel="noopener noreferrer" className="text-emerald-600 hover:text-emerald-500 font-medium underline underline-offset-4">Lihat Foto</a>
+                        <a
+                          href={item.fotoSampah.imageUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition-colors"
+                        >
+                          <Camera size={13} /> Lihat Foto
+                        </a>
                       ) : (
-                        <span className="text-gray-400">-</span>
+                        <span className="text-slate-400 text-xs">-</span>
                       )}
                     </td>
                   </tr>

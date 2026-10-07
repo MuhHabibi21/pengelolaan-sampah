@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
+import { FileText, Camera, MapPin, User } from "lucide-react";
 
 export default async function AdminSemuaLaporanPage() {
   const laporan = await prisma.laporanSampah.findMany({
@@ -14,48 +15,75 @@ export default async function AdminSemuaLaporanPage() {
   });
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Manajemen Laporan Sampah</h1>
-      <p className="text-slate-600 dark:text-slate-400">Pantau seluruh laporan masuk dari masyarakat.</p>
-      
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+    <div className="space-y-8">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-extrabold text-slate-900 flex items-center gap-3">
+          <div className="p-2.5 bg-emerald-100 text-emerald-700 rounded-2xl">
+            <FileText size={26} />
+          </div>
+          Manajemen Semua Laporan Sampah
+        </h1>
+        <p className="text-slate-500 mt-1">
+          Pantau dan verifikasi seluruh pengaduan tumpukan sampah dari masyarakat.
+        </p>
+      </div>
+
+      {/* Table Card */}
+      <div className="bg-white rounded-3xl border border-emerald-100 shadow-sm p-6 sm:p-8">
+        <div className="overflow-x-auto rounded-2xl border border-slate-100">
+          <table className="w-full text-left border-collapse text-sm text-slate-700">
             <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
-                <th className="p-4 font-semibold text-slate-700 dark:text-slate-300">Tanggal</th>
-                <th className="p-4 font-semibold text-slate-700 dark:text-slate-300">Pelapor</th>
-                <th className="p-4 font-semibold text-slate-700 dark:text-slate-300">Jenis</th>
-                <th className="p-4 font-semibold text-slate-700 dark:text-slate-300">Wilayah</th>
-                <th className="p-4 font-semibold text-slate-700 dark:text-slate-300">Berat</th>
-                <th className="p-4 font-semibold text-slate-700 dark:text-slate-300 text-center">Foto</th>
+              <tr className="bg-emerald-50/60 border-b border-emerald-100 text-emerald-950 font-semibold">
+                <th className="py-4 px-5 pl-6">Tanggal</th>
+                <th className="py-4 px-5">Data Pelapor</th>
+                <th className="py-4 px-5">Jenis Sampah</th>
+                <th className="py-4 px-5">Wilayah</th>
+                <th className="py-4 px-5">Berat</th>
+                <th className="py-4 px-5 pr-6 text-center">Foto Bukti</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-slate-100">
               {laporan.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-slate-500">Belum ada laporan masuk.</td>
+                  <td colSpan={6} className="py-12 text-center text-slate-400">
+                    Belum ada laporan sampah masuk.
+                  </td>
                 </tr>
               ) : (
                 laporan.map((item) => (
-                  <tr key={item.id} className="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                    <td className="p-4 text-slate-700 dark:text-slate-300">
+                  <tr key={item.id} className="hover:bg-emerald-50/30 transition-colors">
+                    <td className="py-4 px-5 pl-6 text-slate-600 font-medium">
                       {format(item.tanggalLapor, "dd MMM yyyy", { locale: id })}
                     </td>
-                    <td className="p-4">
-                      <p className="font-medium text-slate-800 dark:text-slate-200">{item.user.nama}</p>
-                      <p className="text-sm text-slate-500">{item.user.noHp}</p>
+                    <td className="py-4 px-5">
+                      <p className="font-bold text-slate-900 flex items-center gap-1.5">
+                        <User size={14} className="text-emerald-600" /> {item.user.nama}
+                      </p>
+                      <p className="text-xs text-slate-400">{item.user.noHp} • {item.user.email}</p>
                     </td>
-                    <td className="p-4 text-slate-700 dark:text-slate-300">
-                      <span className="inline-block px-2 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-md text-xs font-medium">{item.jenisSampah.namaJenis}</span>
+                    <td className="py-4 px-5">
+                      <span className="inline-block px-3 py-1 bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold">
+                        {item.jenisSampah.namaJenis}
+                      </span>
                     </td>
-                    <td className="p-4 text-slate-700 dark:text-slate-300">{item.wilayah.namaWilayah}</td>
-                    <td className="p-4 font-semibold text-emerald-600 dark:text-emerald-400">{item.berat} kg</td>
-                    <td className="p-4 text-center">
+                    <td className="py-4 px-5 text-slate-600 flex items-center gap-1.5">
+                      <MapPin size={14} className="text-emerald-500" />
+                      {item.wilayah.namaWilayah}
+                    </td>
+                    <td className="py-4 px-5 font-bold text-emerald-700">{item.berat} kg</td>
+                    <td className="py-4 px-5 pr-6 text-center">
                       {item.fotoSampah ? (
-                        <a href={item.fotoSampah.imageUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline text-sm font-medium">Lihat</a>
+                        <a
+                          href={item.fotoSampah.imageUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition-colors"
+                        >
+                          <Camera size={13} /> Lihat Foto
+                        </a>
                       ) : (
-                        <span className="text-gray-400">-</span>
+                        <span className="text-slate-400 text-xs">-</span>
                       )}
                     </td>
                   </tr>
